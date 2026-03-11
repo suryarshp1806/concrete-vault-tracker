@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concrete DeFi Academy · Bitget</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0b0e1a;
+            background-image: radial-gradient(circle at 25% 0%, #1a2f3f 0%, #0b0e1a 45%);
+            font-family: 'Inter', sans-serif;
+            color: #edf2f7;
+            line-height: 1.5;
+            padding: 2rem 1.5rem;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        /* glassmorphism + card style */
+        .glass-panel {
+            background: rgba(18, 25, 40, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(90, 200, 150, 0.15);
+            border-radius: 32px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+        }
+
+        .card {
+            background: rgba(18, 28, 45, 0.85);
+            border-radius: 28px;
+            border: 1px solid rgba(72, 255, 180, 0.1);
+            transition: all 0.2s ease;
+            backdrop-filter: blur(8px);
+        }
+        .card:hover {
+            border-color: rgba(72, 255, 180, 0.4);
+            box-shadow: 0 12px 30px -10px #2affb260;
+            transform: translateY(-2px);
+        }
+
+        /* neon green accent (Concrete vibe) */
+        .accent-glow {
+            color: #9cffcc;
+            text-shadow: 0 0 10px #18ff9e60;
+        }
+        .btn-primary {
+            background: linear-gradient(145deg, #1f2a3f, #151f2f);
+            border: 1px solid #2affb280;
+            color: #d6ffe7;
+            border-radius: 60px;
+            padding: 0.75rem 1.8rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 255, 170, 0.1);
+            cursor: default; /* interactive demo — no actual function */
+        }
+        .btn-primary i {
+            color: #2affb2;
+            margin-right: 0.5rem;
+        }
+        .btn-primary:hover {
+            background: #1e3347;
+            border-color: #4effc0;
+            box-shadow: 0 0 20px #1effb060;
+        }
+
+        .badge {
+            background: rgba(42, 255, 178, 0.12);
+            border: 1px solid rgba(42, 255, 178, 0.3);
+            border-radius: 60px;
+            padding: 0.2rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #baffe2;
+        }
+
+        hr {
+            border: 0.5px solid rgba(90, 255, 180, 0.15);
+            margin: 2.5rem 0;
+        }
+
+        /* Risk meter custom */
+        .risk-low { color: #3ae9a3; }
+        .risk-med { color: #faca45; }
+        .meter-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 20px;
+            margin-right: 6px;
+        }
+        .meter-dot.green { background: #27e8a5; box-shadow: 0 0 12px #19f0a0; }
+        .meter-dot.yellow { background: #faca45; box-shadow: 0 0 10px #ffc107; }
+
+        /* layout helpers */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        @media (max-width: 900px) {
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 500px) {
+            .grid-4 { grid-template-columns: 1fr; }
+        }
+
+        /* calculator slider */
+        .calc-slider {
+            width: 100%;
+            accent-color: #33ffb3;
+            background: #1a2a33;
+            height: 8px;
+            border-radius: 10px;
+        }
+        .calc-output {
+            background: #0f1925;
+            border-radius: 32px;
+            padding: 1.5rem 2rem;
+            border: 1px solid #3effb250;
+        }
+
+        .sticky-note {
+            background: rgba(30, 45, 60, 0.9);
+            border-left: 6px solid #c5ffb0;
+            padding: 1.2rem 1.5rem;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+        }
+        .sticky-note.warning {
+            border-left-color: #ffb347;
+        }
+
+        .step-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(42, 255, 178, 0.08);
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            border: 1px solid #35ffb0;
+            color: #87ffcb;
+        }
+
+        /* comparison */
+        .comp-card {
+            background: #0f1a24;
+            border-radius: 28px;
+            padding: 1.8rem;
+        }
+        .comp-check {
+            color: #1effa0;
+            font-size: 1.2rem;
+            margin-right: 0.8rem;
+        }
+        .comp-cross {
+            color: #ff6b7c;
+            font-size: 1.2rem;
+            margin-right: 0.8rem;
+        }
+
+        /* footer / bitget watermark */
+        .bitget-badge {
+            background: rgba(0, 210, 190, 0.1);
+            border-radius: 40px;
+            padding: 0.5rem 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #3affb3;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ===== BITGET HEADER ===== -->
+        <div class="bitget-badge" style="margin-bottom: 1.5rem;">
+            <i class="fab fa-bitcoin" style="color: #2affb2;"></i> <span style="color:#fff;">Bitget</span> <span style="color: #aaa;">/</span> <span style="color: #afffd0;">Concrete Academy</span>
+        </div>
+
+        <!-- ===== HERO + CHOICE MATRIX ===== -->
+        <div class="glass-panel" style="padding: 2.5rem 2rem; margin-bottom: 2.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+                <div>
+                    <span class="badge"><i class="fas fa-robot" style="margin-right: 6px;"></i> decision tool 1.0</span>
+                    <h1 style="font-size: 2.5rem; font-weight: 700; margin-top: 0.6rem; letter-spacing: -0.5px;">Lost in the vaults? <br><span class="accent-glow">Find your perfect match.</span></h1>
+                </div>
+                <div style="color: #a0bbd5;">Answer one question →</div>
+            </div>
+
+            <!-- choice matrix 4 cards (interactive hover) -->
+            <div class="grid-4">
+                <div class="card" style="padding: 1.8rem 1.5rem; cursor: default;">
+                    <i class="fas fa-shield-alt" style="font-size: 2rem; color: #50ffb0; margin-bottom: 1.2rem;"></i>
+                    <h3 style="font-weight: 600;">🛡️ Safe & steady</h3>
+                    <p style="color: #afc9e0; font-size: 0.9rem; margin: 0.5rem 0 1rem;">Stable income, no surprises</p>
+                    <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+                        <span class="badge">USDT 8.5%</span>
+                        <span class="badge">frxUSD+ 7.3%</span>
+                    </div>
+                </div>
+                <div class="card" style="padding: 1.8rem 1.5rem;">
+                    <i class="fas fa-bull" style="font-size: 2rem; color: #ffd966; margin-bottom: 1.2rem;"></i>
+                    <h3 style="font-weight: 600;">🐂 Bitcoin believer</h3>
+                    <p style="color: #afc9e0; font-size: 0.9rem; margin: 0.5rem 0 1rem;">Stack sats with yield</p>
+                    <span class="badge">WBTC 7%</span>
+                </div>
+                <div class="card" style="padding: 1.8rem 1.5rem;">
+                    <i class="fab fa-ethereum" style="font-size: 2rem; color: #b0b0ff; margin-bottom: 1.2rem;"></i>
+                    <h3 style="font-weight: 600;">💎 Eth maxi</h3>
+                    <p style="color: #afc9e0; font-size: 0.9rem; margin: 0.5rem 0 1rem;">ETH exposure + yield</p>
+                    <span class="badge">WeETH 6-8%</span>
+                </div>
+                <div class="card" style="padding: 1.8rem 1.5rem;">
+                    <i class="fas fa-compass" style="font-size: 2rem; color: #b0ffc0; margin-bottom: 1.2rem;"></i>
+                    <h3 style="font-weight: 600;">🗺️ Explorer</h3>
+                    <p style="color: #afc9e0; font-size: 0.9rem; margin: 0.5rem 0 1rem;">Compare all vaults</p>
+                    <span class="badge">ranked →</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== RISK METER DASHBOARD ===== -->
+        <h2 style="font-size: 1.8rem; font-weight: 600; margin-bottom: 1rem;">⚡ Risk Meter <span style="font-size: 1rem; font-weight: 400; color: #9dc5e5; margin-left: 1rem;">no one explains this — we do</span></h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 1.2rem; margin-bottom: 3rem;">
+            <!-- vault card with risk meter -->
+            <div class="card" style="flex: 1 1 200px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem; min-width: 240px;">
+                <div><span style="font-weight: 600;">USDT</span><br><span style="font-size: 0.8rem;">stablecoin</span></div>
+                <div style="margin-left: auto; display: flex; align-items: center; gap: 5px;"><span class="meter-dot green"></span><span class="risk-low">Low</span></div>
+                <i class="fas fa-info-circle" style="color: #6e8bb0; cursor: help;" title="Stablecoin strategies, low volatility"></i>
+            </div>
+            <div class="card" style="flex: 1 1 200px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                <div><span style="font-weight: 600;">frxUSD+</span><br><span style="font-size: 0.8rem;">stable</span></div>
+                <div style="margin-left: auto; display: flex; align-items: center; gap: 5px;"><span class="meter-dot green"></span><span class="risk-low">Low</span></div>
+                <i class="fas fa-info-circle" style="color: #6e8bb0;" title="Stablecoin alternative"></i>
+            </div>
+            <div class="card" style="flex: 1 1 200px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                <div><span style="font-weight: 600;">WBTC</span><br><span style="font-size: 0.8rem;">BTC</span></div>
+                <div style="margin-left: auto; display: flex; align-items: center; gap: 5px;"><span class="meter-dot yellow"></span><span class="risk-med">Medium</span></div>
+                <i class="fas fa-info-circle" style="color: #6e8bb0;" title="BTC volatility"></i>
+            </div>
+            <div class="card" style="flex: 1 1 200px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                <div><span style="font-weight: 600;">WeETH</span><br><span style="font-size: 0.8rem;">ETH</span></div>
+                <div style="margin-left: auto; display: flex; align-items: center; gap: 5px;"><span class="meter-dot yellow"></span><span class="risk-med">Medium</span></div>
+                <i class="fas fa-info-circle" style="color: #6e8bb0;" title="ETH exposure & LST"></i>
+            </div>
+        </div>
+
+        <!-- ===== CRYSTAL BALL CALCULATOR ===== -->
+        <div class="glass-panel" style="padding: 2rem; margin-bottom: 2.5rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                <i class="fas fa-crystal-ball" style="font-size: 2rem; color: #92ffcf;"></i>
+                <h2 style="font-weight: 600;">Crystal Ball Calculator</h2>
+                <span class="badge">see future earnings</span>
+            </div>
+
+            <div class="grid-2">
+                <!-- left input -->
+                <div>
+                    <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Deposit amount ($)</label>
+                    <input type="range" min="100" max="50000" value="1000" step="100" id="depositSlider" class="calc-slider" style="margin-bottom: 2rem;">
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <div class="card" style="flex:1; padding: 1rem;">
+                            <span style="color:#b5d0f0;">Vault</span>
+                            <select id="vaultSelect" style="background: transparent; border: none; color:#9cffcc; font-weight: 600; width: 100%; outline: none;">
+                                <option value="8.5" selected>Concrete USDT (8.5%)</option>
+                                <option value="7.3">frxUSD+ (7.3%)</option>
+                                <option value="7.0">WBTC (7%)</option>
+                                <option value="7.5">WeETH (≈7.5%)</option>
+                            </select>
+                        </div>
+                        <div class="card" style="flex:1; padding: 1rem;">
+                            <span style="color:#b5d0f0;">$ amount</span>
+                            <div id="sliderDisplay" style="font-size: 1.6rem; font-weight: 700; color:#f0f;">$1,000</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- right output -->
+                <div class="calc-output" style="display: flex; flex-direction: column; justify-content: center;">
+                    <div style="font-size: 1.1rem; color: #b2ffdb;">after 1 year</div>
+                    <div class="accent-glow" style="font-size: 2.8rem; font-weight: 700;" id="year1Amount">$1,085</div>
+                    <div style="font-size: 1rem; margin-top: 0.6rem;">after 3 years (compound)</div>
+                    <div style="font-size: 2.2rem; font-weight: 600; color: #f0f5ff;" id="year3Amount">$1,280</div>
+                </div>
+            </div>
+            <p style="color: #7f9bc0; font-size: 0.9rem; margin-top: 1rem;"><i class="fas fa-chart-line" style="margin-right: 6px;"></i> slider updates in real time — compounding quarterly assumed</p>
+        </div>
+
+        <!-- ===== NOOB-PROOF TUTORIAL + STEP BY STEP ===== -->
+        <h2 style="font-size: 1.8rem; margin-bottom: 1.2rem;">🪄 From zero to yield hero</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 1.2rem; margin-bottom: 3rem; justify-content: space-between;">
+            <div class="card" style="flex: 1 1 150px; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                <div class="step-icon">1️⃣</div>
+                <h4 style="margin: 0.8rem 0;">Connect</h4>
+                <p style="font-size: 0.85rem;">MetaMask or <span style="color:#9cffcc;">Bitget Wallet</span></p>
+            </div>
+            <div class="card" style="flex: 1 1 150px; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                <div class="step-icon">2️⃣</div>
+                <h4 style="margin: 0.8rem 0;">Pick vault</h4>
+                <p style="font-size: 0.85rem;">use the matrix above</p>
+            </div>
+            <div class="card" style="flex: 1 1 150px; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                <div class="step-icon">3️⃣</div>
+                <h4 style="margin: 0.8rem 0;">Deposit</h4>
+                <p style="font-size: 0.85rem;">approve & stake</p>
+            </div>
+            <div class="card" style="flex: 1 1 150px; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                <div class="step-icon">4️⃣</div>
+                <h4 style="margin: 0.8rem 0;">Earn</h4>
+                <p style="font-size: 0.85rem;">watch yield grow</p>
+            </div>
+        </div>
+
+        <!-- ===== HIDDEN TIPS + BEGINNER MISTAKES (WALL OF WISDOM) ===== -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+            <!-- pro tips sticky -->
+            <div>
+                <h3 style="display: flex; gap: 10px; margin-bottom: 1rem;"><i class="fas fa-brain" style="color: #aaffd0;"></i> 🧠 Concrete Pro Tips</h3>
+                <div class="sticky-note" style="margin-bottom: 1rem;">
+                    <i class="fas fa-lightbulb" style="color: #feffb0; margin-right: 8px;"></i> Stablecoin vaults are safer during bear markets.
+                </div>
+                <div class="sticky-note" style="margin-bottom: 1rem;">
+                    <i class="fas fa-lightbulb" style="color: #feffb0; margin-right: 8px;"></i> Compounding increases yield exponentially over time.
+                </div>
+                <div class="sticky-note" style="margin-bottom: 1rem;">
+                    <i class="fas fa-lightbulb" style="color: #feffb0; margin-right: 8px;"></i> Institutional vaults = higher capital inflow, stable strategies.
+                </div>
+            </div>
+            <!-- beginner mistakes -->
+            <div>
+                <h3 style="display: flex; gap: 10px; margin-bottom: 1rem;"><i class="fas fa-exclamation-triangle" style="color: #ffb347;"></i> Beginner traps</h3>
+                <div class="sticky-note warning" style="margin-bottom: 1rem;">
+                    <i class="fas fa-times-circle" style="color: #ff866b;"></i> Chasing the highest APY (usually riskiest)
+                </div>
+                <div class="sticky-note warning" style="margin-bottom: 1rem;">
+                    <i class="fas fa-times-circle" style="color: #ff866b;"></i> Ignoring risk — use the meter!
+                </div>
+                <div class="sticky-note warning" style="margin-bottom: 1rem;">
+                    <i class="fas fa-times-circle" style="color: #ff866b;"></i> Not compounding rewards
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== WHY CONCRETE IS DIFFERENT (comparison) ===== -->
+        <div class="glass-panel" style="padding: 2rem; margin-bottom: 2rem;">
+            <h2 style="font-weight: 600; margin-bottom: 1.8rem;">⚡ Why Concrete beats regular DeFi</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 2rem;">
+                <div class="comp-card" style="flex: 1;">
+                    <p style="margin-bottom: 1rem;"><span class="comp-cross"><i class="fas fa-times-circle"></i></span> Regular DeFi</p>
+                    <ul style="list-style: none;">
+                        <li><span class="comp-cross">✕</span> Just a list of pools</li>
+                        <li><span class="comp-cross">✕</span> High risk, low transparency</li>
+                        <li><span class="comp-cross">✕</span> Hidden impermanent loss</li>
+                    </ul>
+                </div>
+                <div class="comp-card" style="flex: 1; border: 1px solid #2affb260;">
+                    <p style="margin-bottom: 1rem;"><span class="comp-check"><i class="fas fa-check-circle"></i></span> Concrete</p>
+                    <ul style="list-style: none;">
+                        <li><span class="comp-check">✔</span> Managed vault infrastructure</li>
+                        <li><span class="comp-check">✔</span> Risk-adjusted yield focus</li>
+                        <li><span class="comp-check">✔</span> Institutional participation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!
